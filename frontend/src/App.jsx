@@ -29,6 +29,7 @@ function App() {
     const [tasks, setTasks] = useState([]);
   const addTask = (task) => {
     setTasks(prevTasks => [...prevTasks, task])
+  }
 
   const taskDescription = useState();
   const [showNewTask, setShowNewTask] = useState(false);
