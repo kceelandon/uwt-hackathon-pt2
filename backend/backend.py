@@ -18,12 +18,48 @@ client = OpenAI()
 def home():
     return "Hello, Flask!"
 
+# {tasks :
+#       task:
+#             task_name:
+#             priority:
+#             effort: }
+
+
+
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    data = request.json
-    text = data.get("text", "")
-    length = len(text)
-    return jsonify({"length": length, "original": text})
+    tasks = request.get_json()
+    print(tasks)
+    prompt = f"Given the following list of tasks in a JSON format, rank them in terms of priority and output it in JSON format: {tasks}"
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=150,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+    )
+    # prompt prioritized_list into gpt and ask it to create a schedule from it
+    prioritized_list = response.choices[0].message.content
+    new_prompt = f"Given the following list of tasks that have been prioritized in order, create an optimized daily schedule with optimized breaks for maximum performance and output it in JSON format: {prioritized_list}"
+    new_response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=150,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {
+                "role": "user",
+                "content": new_prompt,
+            }
+        ],
+    )
+
+    # supposed to return the JSONified optimized schedule
+    return jsonify(new_response)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
