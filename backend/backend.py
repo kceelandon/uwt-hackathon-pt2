@@ -10,10 +10,9 @@ CORS(app)
 
 load_dotenv()
 
-OPENAI_API_KEY = environ["API_KEY"]
+OPENAI_API_KEY = environ["OPENAI_API_KEY"]
 
 client = OpenAI()
-
 @app.route('/')
 def home():
     return "Hello, Flask!"
