@@ -4,10 +4,31 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const runThisCode = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/analyze', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "task1": "fulltime job",
+          "task2": "gym",
+          "task3": "meal prep",
+          "task4": "clean bathroom",
+          "task5": "walk dog"
+        })
+      });
+      const data = await response.json();
+      console.log('Data:', data);
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  }
+
+    const [tasks, setTasks] = useState([]);
   const addTask = (task) => {
     setTasks(prevTasks => [...prevTasks, task])
-  }
 
   const taskDescription = useState();
   const [showNewTask, setShowNewTask] = useState(false);
@@ -50,4 +71,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
