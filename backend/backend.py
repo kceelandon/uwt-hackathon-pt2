@@ -44,11 +44,21 @@ def analyze():
     )
     # prompt prioritized_list into gpt and ask it to create a schedule from it
     prioritized_list = response.choices[0].message.content
-    data = []
-    prompt = {
-        "data": data
-    }
-    return jsonify(lol)
+    new_prompt = f"Given the following list of tasks that have been prioritized in order, create an optimized daily schedule with optimized breaks for maximum performance and output it in JSON format: {prioritized_list}"
+    new_response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=150,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {
+                "role": "user",
+                "content": new_prompt,
+            }
+        ],
+    )
+
+    # supposed to return the JSONified optimized schedule
+    return jsonify(new_response)
 
 
 if __name__ == '__main__':
